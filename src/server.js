@@ -8,6 +8,7 @@ import { connectToMongoDB } from "./configs/mongodb.js";
 import dns from "node:dns/promises";
 import adminRouter from "./routes/adminRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";
+import blogRouter from "./routes/blogRoutes.js";
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const server = express();
@@ -17,7 +18,8 @@ server.use(express.json());
 server.use(cors());
 
 //Routes
-server.use("/api/auth/", adminRouter);
+server.use("/api/admin", adminRouter);
+server.use("/api/blog",blogRouter)
 
 const PORT = process.env.PORT || 5000;
 
