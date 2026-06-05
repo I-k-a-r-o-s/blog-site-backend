@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import BlogModel from "../models/blogModel.js";
+import CommentModel from "../models/commentModel.js";
 
 export const addBlog = async (req, res) => {
   try {
@@ -118,6 +119,50 @@ export const publishedState = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in publishedState!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const addComment = async (req, res) => {
+  try {
+    const { blog, name, content } = req.body;
+
+    await CommentModel.create({
+      blog,
+      name,
+      content,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Comment added for review!",
+    });
+  } catch (error) {
+    console.log("Error in addComment!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const getCommentsbyBlog = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const comments = await CommentModel.find({
+      blog: id,
+      isApproved: true,
+    }).sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: "Comments Fetched Successfully!",
+      comments,
+    });
+  } catch (error) {
+    console.log("Error in getComments!:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error!",
