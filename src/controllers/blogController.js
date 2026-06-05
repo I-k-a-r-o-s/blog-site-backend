@@ -38,3 +38,89 @@ export const addBlog = async (req, res) => {
     });
   }
 };
+
+export const getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await BlogModel.find({ isPublished: true });
+    if (!blogs) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No Published Blogs Exist!" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Fetched All Blogs!",
+      blogs,
+    });
+  } catch (error) {
+    console.log("Error in getAllBlogs!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await BlogModel.findById(id);
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog Not Found!" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Fetched the Blog!",
+      blog,
+    });
+  } catch (error) {
+    console.log("Error in getBlogById!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    await BlogModel.findByIdAndDelete(id);
+    return res.status(200).json({
+      success: true,
+      message: "Blog Deleted Successfully!",
+    });
+  } catch (error) {
+    console.log("Error in deleteBlog!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const publishedState = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const blog = await BlogModel.findById(id);
+    blog.isPublished = !blog.isPublished;
+    await blog.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Blog status updated!",
+    });
+  } catch (error) {
+    console.log("Error in publishedState!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
