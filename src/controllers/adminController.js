@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import BlogModel from "../models/blogModel";
 
 export const adminLogin = async (req, res) => {
   try {
@@ -34,3 +35,20 @@ export const adminLogin = async (req, res) => {
     });
   }
 };
+
+export const getAllBlogsForAdmin=async(req,res)=>{
+  try {
+    const blogs=(await BlogModel.find({})).sort({createdAt:-1})
+     return res.status(200).json({
+      success: true,
+      message: "Successfully Fetched All Blogs!",
+      blogs,
+    });
+  } catch (error) {
+    console.log("Error in getAllBlogsForAdmin!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+}
