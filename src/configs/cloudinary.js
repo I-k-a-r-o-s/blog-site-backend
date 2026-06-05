@@ -10,7 +10,7 @@ const connectCloudinary = () => {
       !CLOUDINARY_API_KEY ||
       !CLOUDINARY_API_SECRET
     ) {
-      console.error("Missing Cloudinary Credentials!");
+      console.log("Missing Cloudinary Credentials!");
       process.exit(1);
     }
 
