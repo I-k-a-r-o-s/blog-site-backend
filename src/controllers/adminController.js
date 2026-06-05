@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import BlogModel from "../models/blogModel";
-import CommentModel from "../models/commentModel";
+import BlogModel from "../models/blogModel.js";
+import CommentModel from "../models/commentModel.js";
 
 export const adminLogin = async (req, res) => {
   try {
@@ -66,6 +66,71 @@ export const getAllComments = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in getAllComments!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const getDashboardContent = async (req, res) => {
+  try {
+    const recentBlogs = await BlogModel.find({})
+      .sort({ createdAt: -1 })
+      .limit(5); // only latest 5
+    const blogs = await BlogModel.countDocuments(); //total blogs count
+    const comments = await CommentModel.countDocuments(); //total comments
+    const drafts = await BlogModel.countDocuments({ isPublised: false }); //total unpublished blogs
+
+    const dashboardData = {
+      recentBlogs,
+      blogs,
+      comments,
+      drafts,
+    };
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Fetched Dashboard Data!",
+      dashboardData,
+    });
+  } catch (error) {
+    console.log("Error in getDashboardContent!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    await CommentModel.findByIdAndDelete(id);
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Deleted Comment!",
+    });
+  } catch (error) {
+    console.log("Error in deleteComment!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
+
+export const approveComment = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    await CommentModel.findByIdAndUpdate(id,{ isApproved: true });
+     return res.status(200).json({
+      success: true,
+      message: "Comment Approved!",
+    });
+  } catch (error) {
+    console.log("Error in approveComment!:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error!",
