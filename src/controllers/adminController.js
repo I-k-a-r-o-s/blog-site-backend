@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import BlogModel from "../models/blogModel";
+import CommentModel from "../models/commentModel";
 
 export const adminLogin = async (req, res) => {
   try {
@@ -36,10 +37,10 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-export const getAllBlogsForAdmin=async(req,res)=>{
+export const getAllBlogsForAdmin = async (req, res) => {
   try {
-    const blogs=(await BlogModel.find({})).sort({createdAt:-1})
-     return res.status(200).json({
+    const blogs = (await BlogModel.find({})).sort({ createdAt: -1 });
+    return res.status(200).json({
       success: true,
       message: "Successfully Fetched All Blogs!",
       blogs,
@@ -51,4 +52,23 @@ export const getAllBlogsForAdmin=async(req,res)=>{
       message: "Internal Server Error!",
     });
   }
-}
+};
+
+export const getAllComments = async (req, res) => {
+  try {
+    const comments = await CommentModel.find({})
+      .populate("blog")
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Fetched All Comments!",
+      comments,
+    });
+  } catch (error) {
+    console.log("Error in getAllComments!:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error!",
+    });
+  }
+};
