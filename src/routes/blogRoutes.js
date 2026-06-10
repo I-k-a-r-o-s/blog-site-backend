@@ -17,7 +17,7 @@ blogRouter.post("/add", auth, upload.single("image"), addBlog);
 blogRouter.get("/all", getAllBlogs);
 blogRouter.get("/:id", getBlogById);
 blogRouter.delete("/delete/:id", auth, deleteBlog);
-blogRouter.post("/published-state", auth, publishedState);
+blogRouter.post("/published-state/:id", auth, publishedState);
 blogRouter.post("/add-comments",addComment)
 blogRouter.post("/comments",getCommentsbyBlog)
 

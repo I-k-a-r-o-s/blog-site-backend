@@ -111,7 +111,7 @@ export const deleteBlog = async (req, res) => {
 
 export const publishedState = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     const blog = await BlogModel.findById(id);
     blog.isPublished = !blog.isPublished;
