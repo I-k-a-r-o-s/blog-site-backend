@@ -104,7 +104,7 @@ export const getDashboardContent = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     await CommentModel.findByIdAndDelete(id);
     return res.status(200).json({
@@ -122,7 +122,7 @@ export const deleteComment = async (req, res) => {
 
 export const approveComment = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     await CommentModel.findByIdAndUpdate(id,{ isApproved: true });
      return res.status(200).json({

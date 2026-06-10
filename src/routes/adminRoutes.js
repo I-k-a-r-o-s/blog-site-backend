@@ -14,8 +14,8 @@ const adminRouter = Router();
 adminRouter.post("/login", adminLogin);
 adminRouter.get("/comments", auth, getAllComments);
 adminRouter.get("/blogs", auth, getAllBlogsForAdmin);
-adminRouter.delete("/delete-comment", auth, deleteComment);
-adminRouter.post("/approve-comment", auth, approveComment);
+adminRouter.delete("/delete-comment/:id", auth, deleteComment);
+adminRouter.post("/approve-comment/:id", auth, approveComment);
 adminRouter.get("/dashboard", auth, getDashboardContent);
 
 export default adminRouter;
