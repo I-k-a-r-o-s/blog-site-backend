@@ -39,7 +39,7 @@ export const adminLogin = async (req, res) => {
 
 export const getAllBlogsForAdmin = async (req, res) => {
   try {
-    const blogs = (await BlogModel.find({})).sort({ createdAt: -1 });
+    const blogs = await BlogModel.find({}).sort({ createdAt: -1 });
     return res.status(200).json({
       success: true,
       message: "Successfully Fetched All Blogs!",
