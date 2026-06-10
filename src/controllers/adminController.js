@@ -80,7 +80,7 @@ export const getDashboardContent = async (req, res) => {
       .limit(5); // only latest 5
     const blogs = await BlogModel.countDocuments(); //total blogs count
     const comments = await CommentModel.countDocuments(); //total comments
-    const drafts = await BlogModel.countDocuments({ isPublised: false }); //total unpublished blogs
+    const drafts = await BlogModel.countDocuments({ isPublished: false }); //total unpublished blogs
 
     const dashboardData = {
       recentBlogs,
