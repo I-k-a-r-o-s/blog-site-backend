@@ -67,6 +67,13 @@ export const getBlogById = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog ID is required!",
+      });
+    }
+
     const blog = await BlogModel.findById(id);
     if (!blog) {
       return res
@@ -92,7 +99,13 @@ export const deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await BlogModel.findByIdAndDelete(id);
+    const deletedBlog = await BlogModel.findByIdAndDelete(id);
+    if (!deletedBlog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog Not Found!",
+      });
+    }
 
     //delete comments of the deleted blog
     await CommentModel.deleteMany({ blog: id });
@@ -115,6 +128,13 @@ export const publishedState = async (req, res) => {
     const { id } = req.params;
 
     const blog = await BlogModel.findById(id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog Not Found!",
+      });
+    }
+
     blog.isPublished = !blog.isPublished;
     await blog.save();
 
@@ -140,7 +160,7 @@ export const addComment = async (req, res) => {
       name,
       content,
     });
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "Comment added for review!",
     });
@@ -178,6 +198,13 @@ export const getCommentsbyBlog = async (req, res) => {
 export const generateBlog = async (req, res) => {
   try {
     const { prompt } = req.body;
+
+    if (!prompt || !prompt.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Prompt is required!",
+      });
+    }
 
     const aiBlog = await geminiAI(prompt);
     res.status(200).json({

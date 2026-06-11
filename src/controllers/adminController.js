@@ -106,7 +106,14 @@ export const deleteComment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await CommentModel.findByIdAndDelete(id);
+    const deletedComment = await CommentModel.findByIdAndDelete(id);
+    if (!deletedComment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment Not Found!",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Successfully Deleted Comment!",
@@ -124,8 +131,18 @@ export const approveComment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await CommentModel.findByIdAndUpdate(id,{ isApproved: true });
-     return res.status(200).json({
+    const approvedComment = await CommentModel.findByIdAndUpdate(id, {
+      isApproved: true,
+    });
+
+    if (!approvedComment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment Not Found!",
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       message: "Comment Approved!",
     });
