@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import BlogModel from "../models/blogModel.js";
 import CommentModel from "../models/commentModel.js";
+import { geminiAI } from "../configs/geminiAI.js";
 
 export const addBlog = async (req, res) => {
   try {
@@ -94,7 +95,7 @@ export const deleteBlog = async (req, res) => {
     await BlogModel.findByIdAndDelete(id);
 
     //delete comments of the deleted blog
-    await CommentModel.deleteMany({blog:id})
+    await CommentModel.deleteMany({ blog: id });
 
     return res.status(200).json({
       success: true,
@@ -170,6 +171,25 @@ export const getCommentsbyBlog = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error!",
+    });
+  }
+};
+
+export const generateBlog = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+
+    const aiBlog = await geminiAI(prompt);
+    res.status(200).json({
+      success: true,
+      message: "Blog generated successfully!",
+      aiBlog,
+    });
+  } catch (error) {
+    console.log("Error in generateBlog!:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
