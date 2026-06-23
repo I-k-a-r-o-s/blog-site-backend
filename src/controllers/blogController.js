@@ -175,7 +175,7 @@ export const addComment = async (req, res) => {
 
 export const getCommentsbyBlog = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     const comments = await CommentModel.find({
       blog: id,
